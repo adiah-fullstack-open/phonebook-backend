@@ -26,6 +26,9 @@ let phonebook = [
   },
 ];
 
+const checkDuplicates = (name) =>
+  phonebook.filter((person) => person.name === name).length > 0;
+
 app.get("/info", (request, response) => {
   const date = new Date();
 
@@ -66,11 +69,17 @@ const generateId = () => {
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  // if (!body.content) {
-  //   return response.status(400).json({
-  //     error: "content missing",
-  //   });
-  // }
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "Name or number missing",
+    });
+  }
+
+  if (checkDuplicates(body.name)) {
+    return response.status(400).json({
+      error: "name must be unique",
+    });
+  }
 
   const person = {
     name: body.name,
