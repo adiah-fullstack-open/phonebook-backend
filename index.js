@@ -1,4 +1,6 @@
+const cors = require("cors");
 const express = require("express");
+
 var morgan = require("morgan");
 
 const app = express();
@@ -29,7 +31,7 @@ const loggingFunction = (tokens, req, res) => {
 };
 
 app.use(express.json());
-// app.use(morgan("tiny"));
+app.use(cors());
 app.use(morgan(loggingFunction));
 
 let phonebook = [
