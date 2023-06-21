@@ -1,13 +1,11 @@
+require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 
 var morgan = require("morgan");
+const Person = require("./models/person");
 
 const app = express();
-
-// Create tokens for stfff
-// console.log(response.req.body);
-// console.log(request.body);
 
 morgan.token("postData", (req, res) => JSON.stringify(req.body));
 
@@ -72,7 +70,7 @@ app.get("/info", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(phonebook);
+  Person.find({}).then((persons) => response.json(persons));
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -101,29 +99,32 @@ const generateId = () => {
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "Name or number missing",
-    });
+  // if (!body.name || !body.number) {
+  //   return response.status(400).json({
+  //     error: "Name or number missing",
+  //   });
+  // }
+  if (body.name === undefined || body.number === undefined) {
+    return response.status(400).json({ error: "Name or number missing" });
   }
 
-  if (checkDuplicates(body.name)) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // if (checkDuplicates(body.name)) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
 
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
 
-  phonebook = phonebook.concat(person);
-  response.json(person);
+  person.save().then((savedNote) => {
+    response.json(savedNote);
+  });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
