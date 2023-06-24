@@ -1,0 +1,21 @@
+GET http://localhost:3001/api/persons/6496f23e4a422ad5ce310c19
+Content-Type: application/json
+
+###
+
+PATCH http://localhost:3001/api/persons/6496f23e4a422ad5ce310c19
+Content-Type: application/json
+
+{
+	"number": "changed"
+}
+
+###
+
+PUT http://localhost:3001/api/persons/6496f23e4a422ad5ce310c19
+Content-Type: application/json
+
+{
+	"name": "Nathaniel",
+	"number": "changed"
+}
