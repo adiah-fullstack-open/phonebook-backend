@@ -105,7 +105,11 @@ app.post("/api/persons", (request, response, next) => {
 app.patch("/api/persons/:id", (request, response, next) => {
   const number = request.body;
 
-  Person.findByIdAndUpdate(request.params.id, number, { new: true })
+  Person.findByIdAndUpdate(request.params.id, number, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
@@ -113,14 +117,13 @@ app.patch("/api/persons/:id", (request, response, next) => {
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
-  const body = request.body;
+  const { name, number } = request.body;
 
-  const person = {
-    name: body.name,
-    number: body.number,
-  };
-
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
+  )
     .then((updatedPerson) => response.json(updatedPerson))
     .catch((error) => next(error));
 });
